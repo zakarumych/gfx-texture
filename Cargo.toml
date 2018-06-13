@@ -1,0 +1,16 @@
+[package]
+name = "gfx-texture"
+version = "0.1.0"
+authors = ["Zakarum <scareaangel@gmail.com>"]
+description = "Helper crate for gfx-hal to create and use textures"
+keywords = ["gfx", "gfx-hal", "graphics"]
+readme = "README.md"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/omni-viral/gfx-texture.git"
+documentation = "https://docs.rs/crate/gfx-texture/0.1.0/gfx-texture"
+
+[dependencies]
+failure = "0.1"
+gfx-hal = { version = "0.1", git = "https://github.com/gfx-rs/gfx", rev = "63826ab79" }
+gfx-render = { git = "https://github.com/gfx-rs/gfx-render", rev = "b6452b7" }
+serde = { version = "1.0", optional = true }
