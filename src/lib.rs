@@ -2,20 +2,22 @@ extern crate failure;
 extern crate gfx_hal as hal;
 extern crate gfx_render as render;
 
-#[cfg(feature="serde")]
+#[cfg(feature = "serde")]
 #[macro_use]
 extern crate serde;
-
 
 use std::borrow::{Borrow, Cow};
 
 use failure::Error;
 
-use hal::{Backend, Device};
 use hal::format::{Aspects, Format, Swizzle};
-use hal::image::{Tiling, Kind, Usage, Access, StorageFlags, Layout, SubresourceLayers, SubresourceRange, Offset, ViewKind};
+use hal::image::{
+    Access, Kind, Layout, Offset, StorageFlags, SubresourceLayers, SubresourceRange, Tiling, Usage,
+    ViewKind,
+};
 use hal::memory::Properties;
 use hal::queue::QueueFamilyId;
+use hal::{Backend, Device};
 
 use render::{Factory, Image};
 
@@ -108,22 +110,32 @@ impl<'a> TextureBuilder<'a> {
     }
 
     /// Build texture and filling it with data provided.
-    pub fn build<B>(&self, family: QueueFamilyId, factory: &mut Factory<B>) -> Result<Texture<B>, Error>
+    pub fn build<B>(
+        &self,
+        family: QueueFamilyId,
+        factory: &mut Factory<B>,
+    ) -> Result<Texture<B>, Error>
     where
         B: Backend,
     {
         let extent = self.kind.extent();
         assert!(self.data_width >= extent.width);
-        assert!(self.data.len() * 8 >= (self.data_width * extent.height * extent.depth * self.format.base_format().0.desc().bits as u32) as usize);
+        assert!(
+            self.data.len() * 8
+                >= (self.data_width
+                    * extent.height
+                    * extent.depth
+                    * self.format.base_format().0.desc().bits as u32) as usize
+        );
 
         let mut image = factory.create_image(
             self.kind,
             1,
             self.format,
             Tiling::Optimal,
-            Properties::DEVICE_LOCAL,
-            Usage::TRANSFER_DST | Usage::SAMPLED,
             StorageFlags::empty(),
+            Usage::TRANSFER_DST | Usage::SAMPLED,
+            Properties::DEVICE_LOCAL,
         )?;
 
         let view = factory.create_image_view(
@@ -137,9 +149,9 @@ impl<'a> TextureBuilder<'a> {
             Swizzle::NO,
             SubresourceRange {
                 aspects: Aspects::COLOR,
-                levels: 0 .. 1,
-                layers: 0 .. 1,
-            }
+                levels: 0..1,
+                layers: 0..1,
+            },
         )?;
 
         factory.upload_image(
